@@ -1,7 +1,7 @@
 # 앱 소개
 https://play.google.com/store/apps/details?id=jhkim.co.kr.doit_everyday
 
----------------------------------------
+
 ## 매일두잇!
 
 매일 또는 어떤 요일마다 해야하는 일이 있나요?
@@ -11,7 +11,7 @@ https://play.google.com/store/apps/details?id=jhkim.co.kr.doit_everyday
 카드 뷰 화면 중앙의 회색 버튼을 누르면, 그럼 당신이 그날 해야할 일은 완료됩니다!
 할 일 카드를 탭하면, 지금까지 달성률과 할일의 정보를 확인할 수 있습니다.
 
----------------------------------------
+
 ## 변경 사항
 
 1.1.1
@@ -26,7 +26,7 @@ https://play.google.com/store/apps/details?id=jhkim.co.kr.doit_everyday
 1.0.1
  - 할 일 정보 화면 내 달력의 날짜 표기 오류 수정
 
----------------------------------------
+
 ## 구현에 사용한 언어, 프레임워크, API
 
 * Dart
