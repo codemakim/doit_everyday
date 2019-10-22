@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "15365015766",
+    "firebase_url": "https://doit-everyday.firebaseio.com",
+    "project_id": "doit-everyday",
+    "storage_bucket": "doit-everyday.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:15365015766:android:1e838a780611b2ac9e6177",
+        "android_client_info": {
+          "package_name": "jhkim.co.kr.doit_everyday"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "15365015766-h150qb1b21r3pk3l4nnh2hdg3qp7v9gb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfeqMGFjODU3eYNPIQWcObhnsLzxry3s8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "15365015766-h150qb1b21r3pk3l4nnh2hdg3qp7v9gb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
