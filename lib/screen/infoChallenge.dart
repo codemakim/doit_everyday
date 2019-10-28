@@ -49,8 +49,8 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
                       horizontal: 4.0,
                     ),
                     child: FutureBuilder<Challenge>(
-                        future:
-                            ChallengeRepository().selectOneChallengeByIndex(widget.index),
+                        future: ChallengeRepository()
+                            .selectOneChallengeByIndex(widget.index),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             Challenge item = snapshot.data;
@@ -61,7 +61,8 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
                                 ),
                                 attributeList('제목', item.title),
                                 attributeList('기간', item.getDateRange()),
-                                attributeList('요일', item.getWeekdayString(', ')),
+                                attributeList(
+                                    '요일', item.getWeekdayString(', ')),
                                 attributeList('완료 / 총 일수',
                                     '${item.doTimes} / ${item.totalTimes}'),
                                 attributeList('현재 / 최대 연속 완료일',
@@ -114,7 +115,6 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
       markedDateShowIcon: true,
       markedDateIconMaxShown: 1,
       markedDateMoreShowTotal: null,
-
       markedDateIconBuilder: (event) {
         return event.icon;
       },
@@ -148,6 +148,28 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
     print(day);
     List<String> historyList = challenge.doHistory.split(',');
 
+    int i = 0;
+    while (i < historyList.length) {
+      if (!challenge.weekDay.contains(day.weekday.toString())) {
+        day = day.add(Duration(days: 1));
+        continue;
+      }
+      if (challenge.weekDay.contains(day.weekday.toString())) {
+        markedDate.add(
+          day,
+          Event(
+            date: day,
+            title: historyList[i] == '0' ? 'fail' : 'success',
+            icon: historyList[i] == '0'
+                ? doDateIcon(Colors.grey[300], day.day.toString())
+                : doDateIcon(Colors.greenAccent, day.day.toString()),
+          ),
+        );
+        day = day.add(Duration(days: 1));
+        i++;
+      }
+    }
+    /*
     for (int i = 0; i < historyList.length; i++) {
       if (!challenge.weekDay.contains(day.weekday.toString())) {
         day = day.add(Duration(days: 1));
@@ -167,6 +189,7 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
         day = day.add(Duration(days: 1));
       }
     }
+    */
     return markedDate;
   }
 }

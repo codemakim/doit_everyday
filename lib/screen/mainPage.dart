@@ -28,7 +28,10 @@ class _MainPage extends State<MainPage> {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Colors.lightBlue, Colors.greenAccent[400],],
+                colors: [
+                  Colors.lightBlue,
+                  Colors.greenAccent[400],
+                ],
               ),
               title: Text(DateFormat('yyyy년 MM월 dd일').format(DateTime.now())),
               actions: <Widget>[
@@ -51,7 +54,8 @@ class _MainPage extends State<MainPage> {
                   itemBuilder: (context) {
                     List<String> itemList = <String>['모든 도전 보기', '문의'];
                     return itemList.map((item) {
-                      return PopupMenuItem<String>(value: item, child: Text(item));
+                      return PopupMenuItem<String>(
+                          value: item, child: Text(item));
                     }).toList();
                   },
                   onSelected: (menuItem) {
@@ -64,7 +68,8 @@ class _MainPage extends State<MainPage> {
                         break;
                       case '문의':
                         {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => SendEmail()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SendEmail()));
                         }
                         break;
                     }
@@ -141,7 +146,12 @@ class _MainPage extends State<MainPage> {
                     */
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(context, FadeRoute(page: InfoChallengeScreen(index: item.index,)));
+                        Navigator.push(
+                            context,
+                            FadeRoute(
+                                page: InfoChallengeScreen(
+                              index: item.index,
+                            )));
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -216,10 +226,7 @@ class _MainPage extends State<MainPage> {
               "오늘 할 매일도전이 없네요!\n도전하세요!\n(상 / 하단의 '+' 버튼 터치)",
               textScaleFactor: 1.4,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.pink,
-                fontWeight: FontWeight.bold
-              ),
+              style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold),
             ),
           );
         }
