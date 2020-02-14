@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:challenge_everyday/animation/fadeRoute.dart';
-import 'package:challenge_everyday/logic/layoutUtils.dart';
 import 'package:challenge_everyday/model/challenge/challenge.dart';
 import 'package:challenge_everyday/repository/challengeRepository.dart';
 import 'package:challenge_everyday/screen/addChallenge.dart';
@@ -13,86 +12,32 @@ import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:intl/intl.dart';
 
 class MainPage extends StatefulWidget {
+
   @override
   _MainPage createState() => _MainPage();
 }
 
 class _MainPage extends State<MainPage> {
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: Scaffold(
-            appBar: GradientAppBar(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.lightBlue,
-                  Colors.greenAccent[400],
-                ],
+    return Scaffold(
+        appBar: GradientAppBar(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.lightBlue,
+              Colors.greenAccent[400],
+            ],
+          ),
+          title: Text(DateFormat('yyyy년 MM월 dd일').format(DateTime.now())),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.add,
+                color: Colors.white,
               ),
-              title: Text(DateFormat('yyyy년 MM월 dd일').format(DateTime.now())),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.add,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddChallengeScreen(),
-                      ),
-                    );
-                  },
-                ),
-                PopupMenuButton<String>(
-                  icon: Icon(Icons.settings),
-                  itemBuilder: (context) {
-                    List<String> itemList = <String>['모든 도전 보기', '문의'];
-                    return itemList.map((item) {
-                      return PopupMenuItem<String>(
-                          value: item, child: Text(item));
-                    }).toList();
-                  },
-                  onSelected: (menuItem) {
-                    switch (menuItem) {
-                      case '모든 도전 보기':
-                        {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AllChallenge()));
-                        }
-                        break;
-                      case '문의':
-                        {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SendEmail()));
-                        }
-                        break;
-                    }
-                  },
-                )
-              ],
-            ),
-            body: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.orange[50],
-                    Colors.pink[100],
-                  ],
-                ),
-              ),
-              child: Center(
-                child: futureChallengeList(),
-              ),
-            ),
-            floatingActionButton: FloatingActionButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -101,17 +46,64 @@ class _MainPage extends State<MainPage> {
                   ),
                 );
               },
-              tooltip: 'Add Challenge',
-              child: Icon(Icons.add),
-              backgroundColor: Colors.greenAccent[400],
+            ),
+            PopupMenuButton<String>(
+              icon: Icon(Icons.settings),
+              itemBuilder: (context) {
+                List<String> itemList = <String>['모든 도전 보기', '문의'];
+                return itemList.map((item) {
+                  return PopupMenuItem<String>(
+                      value: item, child: Text(item));
+                }).toList();
+              },
+              onSelected: (menuItem) {
+                switch (menuItem) {
+                  case '모든 도전 보기':
+                    {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AllChallenge()));
+                    }
+                    break;
+                  case '문의':
+                    {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SendEmail()));
+                    }
+                    break;
+                }
+              },
+            )
+          ],
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.orange[50],
+                Colors.pink[100],
+              ],
             ),
           ),
+          child: Center(
+            child: futureChallengeList(),
+          ),
         ),
-        Container(
-          height: LayoutUtils().getBannerHeight(context),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddChallengeScreen(),
+              ),
+            );
+          },
+          tooltip: 'Add Challenge',
+          child: Icon(Icons.add),
+          backgroundColor: Colors.greenAccent[400],
         ),
-      ],
-    );
+      );
   }
 
   Widget futureChallengeList() {
@@ -149,9 +141,7 @@ class _MainPage extends State<MainPage> {
                         Navigator.push(
                             context,
                             FadeRoute(
-                                page: InfoChallengeScreen(
-                              index: item.index,
-                            )));
+                                page: InfoChallengeScreen(index: item.index,)));
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(

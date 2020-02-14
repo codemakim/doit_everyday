@@ -1,4 +1,3 @@
-import 'package:challenge_everyday/logic/layoutUtils.dart';
 import 'package:challenge_everyday/model/challenge/challenge.dart';
 import 'package:challenge_everyday/repository/challengeRepository.dart';
 import 'package:challenge_everyday/widget/RaisedGradientButton.dart';
@@ -9,6 +8,7 @@ import 'package:intl/intl.dart';
 
 /// 도전을 추가하기 위한 화면입니다.
 class AddChallengeScreen extends StatefulWidget {
+
   @override
   State<StatefulWidget> createState() {
     return AddChallengeFormWidget();
@@ -36,197 +36,188 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: Scaffold(
-            resizeToAvoidBottomPadding: false,
-            key: _scaffoldKey,
-            appBar: GradientAppBar(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [Colors.lightBlue, Colors.greenAccent[400]],
-              ),
-              title: Text('도전 추가하기!'),
-            ),
-            body: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.orange[50],
-                    Colors.pink[100],
-                  ],
-                ),
-              ),
-              child: Column(
-                children: <Widget>[
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Card(
-                            color: Colors.white,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: MediaQuery.of(context).size.height * 0.1),
-                              child: Column(
-                                children: <Widget>[
-                                  // 도전 제목을 입력받기 위한 텍스트 폼
-                                  TextFormField(
-                                    decoration: InputDecoration(
-                                      labelText: "도전 제목",
-                                      hintText: "도전 제목을 입력하세요.",
-                                    ),
-                                    controller: _challengeTitleController,
-                                    validator: (value) {
-                                      if (value.isEmpty) return '도전 제목을 입력하세요.';
-                                      return null;
-                                    },
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(5.0),
-                                  ),
-                                  // 도전 수행 기간 설정을 위한 버튼 위젯
-                                  ButtonBar(
-                                    children: <Widget>[
-                                      Text(
-                                        _dateList == null
-                                            ? '기간을 설정해주세요.'
-                                            : '${DateFormat('yyyy.MM.dd').format(_dateList[0]).toString()} 부터 \n${DateFormat('yyyy.MM.dd').format(_dateList[1]).toString()} 까지',
-                                        style: TextStyle(
-                                          fontSize: 15.0,
-                                        ),
-                                      ),
-                                      // 도전 수행 기간 설정 버튼
-                                      RaisedButton(
-                                        onPressed: () {
-                                          runDateRangePicker();
-                                        }, // onPressed()
-                                        child: Text(
-                                          '기간 설정',
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        color: Colors.indigo,
-                                      ), // RaisedButton
-                                    ], // <Widget>[]
-                                  ), // ButtonBar
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 15),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: weekDayColumn(),
-                                    ), // Row
-                                  ), // Padding
-                                ], // <Widget>[]
-                              ), // Column end.
-                            ),
-                          ),
-                        ), // Padding
-                      ], // <Widget>[]
-                    ), // Column end
-                  ), // Form end
-                  Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: RaisedGradientButton(
-                        child: Text(
-                          '추가하기',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
-                        ),
-                        onPressed: () {
-                          var validateResult = _formKey.currentState.validate();
-                          if (!validateResult) {
-                            _scaffoldKey.currentState.showSnackBar(
-                                SnackBar(content: Text('필수 항목을 모두 입력해주세요.')));
-                          } else if (_dateList == null) {
-                            runDateRangePicker();
-                          } else {
-                            // weekday 를 구하기 위한 코드 시작
-                            String weekday = '';
-                            if (_mon) weekday += '1';
-                            if (_tue) weekday += '2';
-                            if (_wed) weekday += '3';
-                            if (_thu) weekday += '4';
-                            if (_fri) weekday += '5';
-                            if (_sat) weekday += '6';
-                            if (_sun) weekday += '7';
-                            if (weekday.length < 1) weekday = '12345';
-                            // weekday 를 구하기 위한 코드 끝
-
-                            // totalTimes 를 구하기 위한 코드 시작
-                            int totalTimes = 0;
-                            Duration duration = _dateList[1].difference(_dateList[0]);
-                            //int diffDays = duration.inDays - (duration.inDays*2);
-                            for (int i = 0; i <= duration.inDays; i++) {
-                              if (weekday.contains(_dateList[0]
-                                  .add(Duration(days: i))
-                                  .weekday
-                                  .toString())) {
-                                totalTimes++;
-                              }
-                            }
-                            // totalTimes 를 구하기 위한 코드 끝
-
-                            var challenge = new Challenge(
-                                title: _challengeTitleController.text,
-                                startDate: _dateList[0],
-                                endDate: _dateList[1].add(
-                                    Duration(hours: 23, minutes: 59, seconds: 59)),
-                                weekDay: weekday,
-                                doTimes: 0,
-                                totalTimes: totalTimes,
-                                maxDoTimes: 0,
-                                createDate: DateTime.now());
-
-                            // Challenge 추가
-                            ChallengeRepository().insertChallenge(challenge);
-                            print(challenge.toString());
-                            setState(() {});
-                            Navigator.pop(context);
-                          }
-                        },
-                        gradient: LinearGradient(
-                          colors: [Colors.lightBlue, Colors.greenAccent[400]],
-                        ),
-                      ) // RaisedButton end,
-                      ),
-                  Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      child: RaisedGradientButton(
-                        child: Text(
-                          '되돌아가기',
-                          style: TextStyle(color: Colors.white, fontSize: 16.0),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        gradient: LinearGradient(
-                          colors: [Colors.amber, Colors.pink],
-                        ),
-                      ) // RaisedButton end,
-                      ),
-                ],
-              ),
-            ),
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      key: _scaffoldKey,
+      appBar: GradientAppBar(
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [Colors.lightBlue, Colors.greenAccent[400]],
+        ),
+        title: Text('도전 추가하기!'),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.orange[50],
+              Colors.pink[100],
+            ],
           ),
         ),
-        Container(
-          height: LayoutUtils().getBannerHeight(context),
-        )
-      ],
+        child: Column(
+          children: <Widget>[
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Card(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: MediaQuery.of(context).size.height * 0.1),
+                        child: Column(
+                          children: <Widget>[
+                            // 도전 제목을 입력받기 위한 텍스트 폼
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: "도전 제목",
+                                hintText: "도전 제목을 입력하세요.",
+                              ),
+                              controller: _challengeTitleController,
+                              validator: (value) {
+                                if (value.isEmpty) return '도전 제목을 입력하세요.';
+                                return null;
+                              },
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(5.0),
+                            ),
+                            // 도전 수행 기간 설정을 위한 버튼 위젯
+                            ButtonBar(
+                              children: <Widget>[
+                                Text(
+                                  _dateList == null
+                                      ? '기간을 설정해주세요.'
+                                      : '${DateFormat('yyyy.MM.dd').format(_dateList[0]).toString()} 부터 \n${DateFormat('yyyy.MM.dd').format(_dateList[1]).toString()} 까지',
+                                  style: TextStyle(
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+                                // 도전 수행 기간 설정 버튼
+                                RaisedButton(
+                                  onPressed: () {
+                                    runDateRangePicker();
+                                  }, // onPressed()
+                                  child: Text(
+                                    '기간 설정',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  color: Colors.indigo,
+                                ), // RaisedButton
+                              ], // <Widget>[]
+                            ), // ButtonBar
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 15),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: weekDayColumn(),
+                              ), // Row
+                            ), // Padding
+                          ], // <Widget>[]
+                        ), // Column end.
+                      ),
+                    ),
+                  ), // Padding
+                ], // <Widget>[]
+              ), // Column end
+            ), // Form end
+            Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: RaisedGradientButton(
+                  child: Text(
+                    '추가하기',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  onPressed: () {
+                    var validateResult = _formKey.currentState.validate();
+                    if (!validateResult) {
+                      _scaffoldKey.currentState.showSnackBar(
+                          SnackBar(content: Text('필수 항목을 모두 입력해주세요.')));
+                    } else if (_dateList == null) {
+                      runDateRangePicker();
+                    } else {
+                      // weekday 를 구하기 위한 코드 시작
+                      String weekday = '';
+                      if (_mon) weekday += '1';
+                      if (_tue) weekday += '2';
+                      if (_wed) weekday += '3';
+                      if (_thu) weekday += '4';
+                      if (_fri) weekday += '5';
+                      if (_sat) weekday += '6';
+                      if (_sun) weekday += '7';
+                      if (weekday.length < 1) weekday = '12345';
+                      // weekday 를 구하기 위한 코드 끝
+
+                      // totalTimes 를 구하기 위한 코드 시작
+                      int totalTimes = 0;
+                      Duration duration = _dateList[1].difference(_dateList[0]);
+                      //int diffDays = duration.inDays - (duration.inDays*2);
+                      for (int i = 0; i <= duration.inDays; i++) {
+                        if (weekday.contains(_dateList[0]
+                            .add(Duration(days: i))
+                            .weekday
+                            .toString())) {
+                          totalTimes++;
+                        }
+                      }
+                      // totalTimes 를 구하기 위한 코드 끝
+
+                      var challenge = new Challenge(
+                          title: _challengeTitleController.text,
+                          startDate: _dateList[0],
+                          endDate: _dateList[1].add(
+                              Duration(hours: 23, minutes: 59, seconds: 59)),
+                          weekDay: weekday,
+                          doTimes: 0,
+                          totalTimes: totalTimes,
+                          maxDoTimes: 0,
+                          createDate: DateTime.now());
+
+                      // Challenge 추가
+                      ChallengeRepository().insertChallenge(challenge);
+                      print(challenge.toString());
+                      setState(() {});
+                      Navigator.pop(context);
+                    }
+                  },
+                  gradient: LinearGradient(
+                    colors: [Colors.lightBlue, Colors.greenAccent[400]],
+                  ),
+                ) // RaisedButton end,
+                ),
+            Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: RaisedGradientButton(
+                  child: Text(
+                    '되돌아가기',
+                    style: TextStyle(color: Colors.white, fontSize: 16.0),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  gradient: LinearGradient(
+                    colors: [Colors.amber, Colors.pink],
+                  ),
+                ) // RaisedButton end,
+                ),
+          ],
+        ),
+      ),
     );
   }
 
