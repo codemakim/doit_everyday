@@ -125,17 +125,6 @@ class _MainPage extends State<MainPage> {
                   return Container(
                     width: MediaQuery.of(context).size.width,
                     margin: EdgeInsets.symmetric(horizontal: 10.0),
-                    /*
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Colors.amberAccent, Colors.cyanAccent, Colors.orange[100], Colors.lightGreenAccent,],
-                        //colors: [Colors.amber[100], Colors.amber[50], Colors.amber[100],],
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                    ),
-                    */
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(
