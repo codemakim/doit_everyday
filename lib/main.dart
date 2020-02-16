@@ -2,7 +2,6 @@ import 'package:challenge_everyday/privateStrings.dart';
 import 'package:challenge_everyday/provider/ProviderBannerAd.dart';
 import 'package:challenge_everyday/repository/challengeRepository.dart';
 import 'package:challenge_everyday/screen/mainPage.dart';
-import 'package:challenge_everyday/widget/SpaceBannerContainer.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,14 +32,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: Column(
-          children: <Widget>[
-            Expanded(
-              child: MainPage(),
-            ),
-            SpaceBannerContainer(),
-          ],
-        ),
+        home: MainPage(),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:challenge_everyday/model/challenge/challenge.dart';
 import 'package:challenge_everyday/repository/challengeRepository.dart';
+import 'package:challenge_everyday/widget/SpaceBannerContainer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
@@ -23,56 +24,63 @@ class InfoChallengeScreen extends StatefulWidget {
 class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: GradientAppBar(
-        gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [Colors.lightBlue, Colors.greenAccent[400]]),
-        title: Text('도전 정보'),
-      ),
-      body: Stack(
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.orange[50], Colors.pink[100]],
-            )),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4.0,
-              ),
-              child: FutureBuilder<Challenge>(
-                  future: ChallengeRepository()
-                      .selectOneChallengeByIndex(widget.index),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      Challenge item = snapshot.data;
-                      return ListView(
-                        children: <Widget>[
-                          Card(
-                            child: challengeCalendar(context, item),
-                          ),
-                          attributeList('제목', item.title),
-                          attributeList('기간', item.getDateRange()),
-                          attributeList(
-                              '요일', item.getWeekdayString(', ')),
-                          attributeList('완료 / 총 일수',
-                              '${item.doTimes} / ${item.totalTimes}'),
-                          attributeList('현재 / 최대 연속 완료일',
-                              '${item.continueDoTimes} / ${item.maxDoTimes}'),
-                        ],
-                      );
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  }),
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: Scaffold(
+            appBar: GradientAppBar(
+              gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [Colors.lightBlue, Colors.greenAccent[400]]),
+              title: Text('도전 정보'),
+            ),
+            body: Stack(
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.orange[50], Colors.pink[100]],
+                  )),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4.0,
+                    ),
+                    child: FutureBuilder<Challenge>(
+                        future: ChallengeRepository()
+                            .selectOneChallengeByIndex(widget.index),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            Challenge item = snapshot.data;
+                            return ListView(
+                              children: <Widget>[
+                                Card(
+                                  child: challengeCalendar(context, item),
+                                ),
+                                attributeList('제목', item.title),
+                                attributeList('기간', item.getDateRange()),
+                                attributeList(
+                                    '요일', item.getWeekdayString(', ')),
+                                attributeList('완료 / 총 일수',
+                                    '${item.doTimes} / ${item.totalTimes}'),
+                                attributeList('현재 / 최대 연속 완료일',
+                                    '${item.continueDoTimes} / ${item.maxDoTimes}'),
+                              ],
+                            );
+                          } else {
+                            return CircularProgressIndicator();
+                          }
+                        }),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+        SpaceBannerContainer(),
+      ],
     );
   }
 

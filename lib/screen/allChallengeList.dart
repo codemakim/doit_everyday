@@ -2,6 +2,7 @@ import 'package:challenge_everyday/animation/fadeRoute.dart';
 import 'package:challenge_everyday/model/challenge/challenge.dart';
 import 'package:challenge_everyday/repository/challengeRepository.dart';
 import 'package:challenge_everyday/screen/infoChallenge.dart';
+import 'package:challenge_everyday/widget/SpaceBannerContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 
@@ -14,52 +15,59 @@ class AllChallenge extends StatefulWidget {
 class _AllChallengeState extends State<AllChallenge> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: GradientAppBar(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Colors.lightBlue, Colors.greenAccent[400]],
-        ),
-        title: Text('도전 목록'),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.orange[50],
-              Colors.pink[100],
-            ],
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(
-            top: 12.0,
-            left: 8.0,
-            right: 8.0,
-          ),
-          child: FutureBuilder<List<Challenge>>(
-            future: ChallengeRepository().selectAllChallenge(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    Challenge item = snapshot.data[index];
-                    return challengeCardList(context, item);
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: Scaffold(
+            appBar: GradientAppBar(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.lightBlue, Colors.greenAccent[400]],
+              ),
+              title: Text('도전 목록'),
+            ),
+            body: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.orange[50],
+                    Colors.pink[100],
+                  ],
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  top: 12.0,
+                  left: 8.0,
+                  right: 8.0,
+                ),
+                child: FutureBuilder<List<Challenge>>(
+                  future: ChallengeRepository().selectAllChallenge(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          Challenge item = snapshot.data[index];
+                          return challengeCardList(context, item);
+                        },
+                      );
+                    } else {
+                      return Center(
+                        child: Text('도전 목록이 없어요.'),
+                      );
+                    }
                   },
-                );
-              } else {
-                return Center(
-                  child: Text('도전 목록이 없어요.'),
-                );
-              }
-            },
+                ),
+              ),
+            ),
           ),
         ),
-      ),
+        SpaceBannerContainer(),
+      ],
     );
   }
 
