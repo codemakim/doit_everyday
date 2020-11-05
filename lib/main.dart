@@ -1,4 +1,4 @@
-import 'package:challenge_everyday/privateStrings.dart';
+import 'package:challenge_everyday/PrivateStrings.dart';
 import 'package:challenge_everyday/provider/ProviderBannerAd.dart';
 import 'package:challenge_everyday/repository/challengeRepository.dart';
 import 'package:challenge_everyday/screen/mainPage.dart';

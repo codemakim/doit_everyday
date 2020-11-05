@@ -16,7 +16,7 @@ class ProviderBannerAd with ChangeNotifier {
       adUnitId: this.adUnitId,
       size: AdSize.smartBanner,
       targetingInfo: MobileAdTargetingInfo(
-        keywords: <String>['korean', 'game', 'programer'],
+        keywords: <String>['korean', 'game', 'programmer'],
         contentUrl: 'https://flutter.io',
         childDirected: false,
         testDevices: <String>[], // Android emulators are considered test devices

@@ -47,7 +47,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Colors.lightBlue, Colors.greenAccent[400]],
+                List: [Colors.lightBlue, Colors.greenAccent[400]],
               ),
               title: Text('도전 추가하기!'),
             ),
@@ -56,7 +56,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
+                  List: [
                     Colors.orange[50],
                     Colors.pink[100],
                   ],
@@ -200,7 +200,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                           }
                         },
                         gradient: LinearGradient(
-                          colors: [Colors.lightBlue, Colors.greenAccent[400]],
+                          List: [Colors.lightBlue, Colors.greenAccent[400]],
                         ),
                       ) // RaisedButton end,
                       ),
@@ -215,7 +215,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                           Navigator.pop(context);
                         },
                         gradient: LinearGradient(
-                          colors: [Colors.amber, Colors.pink],
+                          List: [Colors.amber, Colors.pink],
                         ),
                       ) // RaisedButton end,
                       ),
