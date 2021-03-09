@@ -23,7 +23,7 @@ class _AllChallengeState extends State<AllChallenge> {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                List: [Colors.lightBlue, Colors.greenAccent[400]],
+                colors: [Colors.lightBlue, Colors.greenAccent[400]],
               ),
               title: Text('도전 목록'),
             ),
@@ -32,7 +32,7 @@ class _AllChallengeState extends State<AllChallenge> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  List: [
+                  colors: [
                     Colors.orange[50],
                     Colors.pink[100],
                   ],

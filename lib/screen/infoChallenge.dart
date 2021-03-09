@@ -32,7 +32,7 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
               gradient: LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
-                  List: [Colors.lightBlue, Colors.greenAccent[400]]),
+                  colors: [Colors.lightBlue, Colors.greenAccent[400]]),
               title: Text('도전 정보'),
             ),
             body: Stack(
@@ -42,7 +42,7 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
                       gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    List: [Colors.orange[50], Colors.pink[100]],
+                    colors: [Colors.orange[50], Colors.pink[100]],
                   )),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

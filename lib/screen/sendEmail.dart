@@ -20,7 +20,7 @@ class _SendEmailState extends State<SendEmail> {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                List: [
+                colors: [
                   Colors.lightBlue,
                   Colors.greenAccent[400],
                 ],
@@ -32,7 +32,7 @@ class _SendEmailState extends State<SendEmail> {
                   gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                List: [
+                colors: [
                   Colors.orange[50],
                   Colors.pink[100],
                 ],
