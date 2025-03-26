@@ -1,4 +1,3 @@
-
 import 'package:challenge_everyday/model/challenge/challenge.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,26 +20,23 @@ class ChallengeRepository {
   // 외부에서 'DbHelper()'로 접근할 수 있도록 함.
   factory ChallengeRepository() => _db;
 
-  static Database _database;
+  static Database? _database;
 
   // 데이터베이스가 생성되지 않았을 경우 생성하여 반환한다.
   Future<Database> get database async {
-    if(_database != null) return _database;
+    if (_database != null) return _database!;
     _database = await initChallengeDB();
-    return _database;
+    return _database!;
   }
 
   //Challenge 테이블을 초기화하기 위한 함수
-  initChallengeDB() async {
+  Future<Database> initChallengeDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'challengeDB.db');
 
-    return await openDatabase(
-        path,
-        version: 1,
-        onOpen: (db) {},
+    return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-          await db.execute('''
+      await db.execute('''
           CREATE TABLE $challengeTableName (
             n_index INTEGER PRIMARY KEY AUTOINCREMENT,
             s_title TEXT NOT NULL,
@@ -58,15 +54,12 @@ class ChallengeRepository {
             n_userindex INTEGER NOT NULL DEFAULT 0,
             d_createdate TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
           )
-          '''
-          );
-        },
-        onUpgrade: (db, oldVersion, newVersion) {}
-    );
+          ''');
+    }, onUpgrade: (db, oldVersion, newVersion) {});
   }
 
   /// Challenge 정보를 abh_challenge 테이블에 저장하기 위한 메소드입니다.
-  insertChallenge(Challenge challenge) async {
+  Future<int> insertChallenge(Challenge challenge) async {
     final db = await database;
     int result = await db.insert(challengeTableName, challenge.toDBMap());
     //TODO 로깅
@@ -75,12 +68,10 @@ class ChallengeRepository {
   }
 
   /// n_index 컬럼을 이용해 Challenge 정보 1개를 가져오기 위한 메소드입니다.
-  Future<Challenge> selectOneChallengeByIndex(int index) async {
+  Future<Challenge?> selectOneChallengeByIndex(int index) async {
     final db = await database;
-    List<Map<String, dynamic>> result = await db.query(
-        challengeTableName,
-        where: 'n_index=? and b_valid=1',
-        whereArgs: [index]);
+    List<Map<String, dynamic>> result = await db.query(challengeTableName,
+        where: 'n_index=? and b_valid=1', whereArgs: [index]);
     //TODO 로깅
     print('selectOne Challenge result : $result');
     return result.isNotEmpty ? Challenge.fromJson(result.first) : null;
@@ -90,76 +81,72 @@ class ChallengeRepository {
   Future<List<Challenge>> selectAllChallenge() async {
     final db = await database;
     List<Map<String, dynamic>> result = await db.query(challengeTableName);
-    List<Challenge> list = result.isNotEmpty ? result.map((res) => Challenge.fromJson(res)).toList() : [];
+    List<Challenge> list = result.isNotEmpty
+        ? result.map((res) => Challenge.fromJson(res)).toList()
+        : [];
     return list;
   }
 
   /// b_valid 컬럼의 값이 1인 Challenge 목록을 가져오기 위한 리파지토리입니다.
   Future<List<Challenge>> selectChallengeByTrueValid() async {
     final db = await database;
-    List<Map<String, dynamic>> result = await db.query(
-        challengeTableName,
-      where: 'b_valid=1'
-    );
+    List<Map<String, dynamic>> result =
+        await db.query(challengeTableName, where: 'b_valid=1');
     //TODO 로깅
     print('select Challenge by valid(true): $result');
-    return result.isNotEmpty ? result.map((c) => Challenge.fromJson(c)).toList() : [];
+    return result.isNotEmpty
+        ? result.map((c) => Challenge.fromJson(c)).toList()
+        : [];
   }
 
   /// 메인화면 목록에 표시를 위한 리파지토리입니다.
   Future<List<Challenge>> selectChallengeForMainListTile() async {
     final db = await database;
-    List<Map<String, dynamic>> result = await db.query(
-        challengeTableName,
-        where: '''
+    List<Map<String, dynamic>> result =
+        await db.query(challengeTableName, where: '''
         b_valid=1 
         AND d_startdate <= '${DateTime.now().toString()}'
         AND d_enddate >= '${DateTime.now().toString()}'
         AND s_weekday LIKE '%${DateTime.now().weekday}%'
-        '''
-    );
+        ''');
     //TODO 로깅
     print('select Challenge for ListTile: $result');
-    return result.isNotEmpty ? result.map((c) => Challenge.fromJson(c)).toList() : result;
+    return result.isNotEmpty
+        ? result.map((c) => Challenge.fromJson(c)).toList()
+        : [];
   }
 
   /// Challenge 정보를 업데이트하기 위한 메소드입니다.
-  updateChallenge(Challenge challenge) async {
+  Future<int> updateChallenge(Challenge challenge) async {
     final db = await database;
-    int result = await db.update(
-        challengeTableName, challenge.toDBMap(),
-        where: 'n_index=?',
-        whereArgs: [challenge.index]);
+    int result = await db.update(challengeTableName, challenge.toDBMap(),
+        where: 'n_index=?', whereArgs: [challenge.index]);
     //TODO 로깅
     print('update Challenge result : $result');
     return result;
   }
 
   /// Challenge 의 마지막 날짜가 오늘보다
-  updateChallengeValid() async {
+  Future<int> updateChallengeValid() async {
     final db = await database;
     int resultCount = 0;
     List<Challenge> list = await selectChallengeByTrueValid();
-    list.forEach((i) async {
+    for (var i in list) {
       i.valid = false;
-      int result = await db.update(
-        challengeTableName,
-        i.toDBMap(),
-        where: '''
+      int result = await db.update(challengeTableName, i.toDBMap(), where: '''
         n_index=? and
         d_enddate < '${DateTime.now().toString()}'
-        ''',
-        whereArgs: [i.index]
-      );
+        ''', whereArgs: [i.index]);
       resultCount += result;
-    });
+    }
     return resultCount;
   }
 
   /// index 에 해당하는 Challenge 정보를 삭제하기 위한 메소드입니다.
-  deleteChallenge(int index) async {
+  Future<int> deleteChallenge(int index) async {
     final db = await database;
-    int result = await db.delete(challengeTableName, where: 'n_index=?', whereArgs: [index]);
+    int result = await db
+        .delete(challengeTableName, where: 'n_index=?', whereArgs: [index]);
     //TODO 로깅
     print('delete Challenge result : $result');
     return result;

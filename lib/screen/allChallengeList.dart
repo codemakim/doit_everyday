@@ -4,9 +4,9 @@ import 'package:challenge_everyday/repository/challengeRepository.dart';
 import 'package:challenge_everyday/screen/infoChallenge.dart';
 import 'package:challenge_everyday/widget/SpaceBannerContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
 
 class AllChallenge extends StatefulWidget {
+  const AllChallenge({Key? key}) : super(key: key);
 
   @override
   _AllChallengeState createState() => _AllChallengeState();
@@ -19,13 +19,17 @@ class _AllChallengeState extends State<AllChallenge> {
       children: <Widget>[
         Expanded(
           child: Scaffold(
-            appBar: GradientAppBar(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Colors.lightBlue, Colors.greenAccent[400]],
+            appBar: AppBar(
+              flexibleSpace: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.lightBlue, Colors.greenAccent],
+                  ),
+                ),
               ),
-              title: Text('도전 목록'),
+              title: const Text('도전 목록'),
             ),
             body: Container(
               decoration: BoxDecoration(
@@ -33,8 +37,8 @@ class _AllChallengeState extends State<AllChallenge> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.orange[50],
-                    Colors.pink[100],
+                    Colors.orange.shade50,
+                    Colors.pink.shade100,
                   ],
                 ),
               ),
@@ -49,14 +53,14 @@ class _AllChallengeState extends State<AllChallenge> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
-                        itemCount: snapshot.data.length,
+                        itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
-                          Challenge item = snapshot.data[index];
+                          Challenge item = snapshot.data![index];
                           return challengeCardList(context, item);
                         },
                       );
                     } else {
-                      return Center(
+                      return const Center(
                         child: Text('도전 목록이 없어요.'),
                       );
                     }
@@ -77,14 +81,14 @@ class _AllChallengeState extends State<AllChallenge> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
-            itemCount: snapshot.data.length,
+            itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
-              Challenge item = snapshot.data[index];
+              Challenge item = snapshot.data![index];
               return challengeCardList(context, item);
             },
           );
         } else {
-          return Center(
+          return const Center(
             child: Text('도전 목록이 없어요.'),
           );
         }
@@ -99,7 +103,8 @@ class _AllChallengeState extends State<AllChallenge> {
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: ListTile(
           onTap: () {
-            Navigator.push(context, FadeRoute(page: InfoChallengeScreen(index: challenge.index)));
+            Navigator.push(context,
+                FadeRoute(page: InfoChallengeScreen(index: challenge.index)));
           },
           title: Text(
             challenge.title,
@@ -110,7 +115,7 @@ class _AllChallengeState extends State<AllChallenge> {
             textScaleFactor: 1.1,
           ),
           trailing: IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             onPressed: () {
               confirmDialog(context, challenge);
             },
@@ -123,20 +128,20 @@ class _AllChallengeState extends State<AllChallenge> {
   /// 도전을 삭제하기 전, 한 번 더 삭제 의사를 묻는 컨펌과 삭제처리 메소드
   void confirmDialog(BuildContext context, Challenge challenge) {
     Widget alertDialog = AlertDialog(
-      title: Text('도전 삭제'),
+      title: const Text('도전 삭제'),
       content: Text('"${challenge.title}"를 삭제하시겟어요?'),
       actions: <Widget>[
-        FlatButton(
-          child: Text('Close'),
+        TextButton(
+          child: const Text('Close'),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        FlatButton(
-          child: Text('OK'),
+        TextButton(
+          child: const Text('OK'),
           onPressed: () {
             print('${challenge.title} 삭제');
-            ChallengeRepository().deleteChallenge(challenge.index);
+            ChallengeRepository().deleteChallenge(challenge.index ?? 0);
             setState(() {});
             Navigator.of(context).pop();
           },

@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
 
 /// 2. 해당 화면 전환과 어울리는 디자인 선택, 적용
 /// 3. 기능 추가
@@ -13,9 +12,9 @@ import 'package:gradient_app_bar/gradient_app_bar.dart';
 /// 3-1. - 연필 버튼 추가. 누르면 수정 페이지로 이동.
 
 class InfoChallengeScreen extends StatefulWidget {
-  final int index;
+  final int? index;
 
-  InfoChallengeScreen({@required this.index,});
+  InfoChallengeScreen({required this.index});
 
   @override
   _InfoChallengeScreenState createState() => _InfoChallengeScreenState();
@@ -28,11 +27,16 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
       children: <Widget>[
         Expanded(
           child: Scaffold(
-            appBar: GradientAppBar(
-              gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [Colors.lightBlue, Colors.greenAccent[400]]),
+            appBar: AppBar(
+              flexibleSpace: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [Colors.lightBlue, Colors.greenAccent],
+                  ),
+                ),
+              ),
               title: Text('도전 정보'),
             ),
             body: Stack(
@@ -42,18 +46,18 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
                       gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.orange[50], Colors.pink[100]],
+                    colors: [Colors.orange.shade50, Colors.pink.shade100],
                   )),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 4.0,
                     ),
-                    child: FutureBuilder<Challenge>(
+                    child: FutureBuilder<Challenge?>(
                         future: ChallengeRepository()
-                            .selectOneChallengeByIndex(widget.index),
+                            .selectOneChallengeByIndex(widget.index!),
                         builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            Challenge item = snapshot.data;
+                          if (snapshot.hasData && snapshot.data != null) {
+                            Challenge item = snapshot.data!;
                             return ListView(
                               children: <Widget>[
                                 Card(
@@ -70,7 +74,7 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
                               ],
                             );
                           } else {
-                            return CircularProgressIndicator();
+                            return Center(child: CircularProgressIndicator());
                           }
                         }),
                   ),
@@ -104,7 +108,7 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
 
   Widget challengeCalendar(context, Challenge challenge) {
     EventList<Event> markedDate = getEventDateList(challenge);
-    return CalendarCarousel(
+    return CalendarCarousel<Event>(
       height: MediaQuery.of(context).size.height * 0.50,
       weekendTextStyle: TextStyle(
         color: Colors.red,
@@ -159,7 +163,7 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
             date: day,
             title: historyList[i] == '0' ? 'fail' : 'success',
             icon: historyList[i] == '0'
-                ? doDateIcon(Colors.grey[300], day.day.toString())
+                ? doDateIcon(Colors.grey.shade300, day.day.toString())
                 : doDateIcon(Colors.greenAccent, day.day.toString()),
           ),
         );

@@ -1,9 +1,9 @@
 import 'package:challenge_everyday/widget/SpaceBannerContainer.dart';
 import 'package:flutter/material.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SendEmail extends StatefulWidget {
+  const SendEmail({Key? key}) : super(key: key);
 
   @override
   _SendEmailState createState() => _SendEmailState();
@@ -16,16 +16,20 @@ class _SendEmailState extends State<SendEmail> {
       children: <Widget>[
         Expanded(
           child: Scaffold(
-            appBar: GradientAppBar(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.lightBlue,
-                  Colors.greenAccent[400],
-                ],
+            appBar: AppBar(
+              flexibleSpace: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.lightBlue,
+                      Colors.greenAccent,
+                    ],
+                  ),
+                ),
               ),
-              title: Text('문의하기'),
+              title: const Text('문의하기'),
             ),
             body: Container(
               decoration: BoxDecoration(
@@ -33,21 +37,23 @@ class _SendEmailState extends State<SendEmail> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.orange[50],
-                  Colors.pink[100],
+                  Colors.orange.shade50,
+                  Colors.pink.shade100,
                 ],
               )),
               child: Center(
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: () => _launchURL(
-                      'codemakim@gmail.com', 'Challenge EveryDay 앱 문의', '기능 관련 문의시, 사용하시는 기기의 기종을 적어주시면 감사하겠습니다.'),
-                  child: new Text(
+                      'codemakim@gmail.com',
+                      'Challenge EveryDay 앱 문의',
+                      '기능 관련 문의시, 사용하시는 기기의 기종을 적어주시면 감사하겠습니다.'),
+                  child: const Text(
                     'Send mail',
-                    style: TextStyle(
-                      color: Colors.white
-                    ),
+                    style: TextStyle(color: Colors.white),
                   ),
-                  color: Colors.lightBlue,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.lightBlue,
+                  ),
                 ),
               ),
             ),
@@ -59,11 +65,17 @@ class _SendEmailState extends State<SendEmail> {
   }
 
   void _launchURL(String toMailId, String subject, String body) async {
-    var url = 'mailto:$toMailId?subject=$subject&body=$body';
-    if (await canLaunch(url)) {
-      await launch(url);
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: toMailId,
+      query:
+          'subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}',
+    );
+
+    if (await canLaunchUrl(emailLaunchUri)) {
+      await launchUrl(emailLaunchUri);
     } else {
-      throw 'Could not launch $url';
+      throw 'Could not launch $emailLaunchUri';
     }
   }
 }

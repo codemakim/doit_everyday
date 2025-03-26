@@ -2,16 +2,22 @@ import 'package:challenge_everyday/PrivateStrings.dart';
 import 'package:challenge_everyday/provider/ProviderBannerAd.dart';
 import 'package:challenge_everyday/repository/challengeRepository.dart';
 import 'package:challenge_everyday/screen/mainPage.dart';
-import 'package:firebase_admob/firebase_admob.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
     statusBarBrightness: Brightness.light,
     statusBarColor: Colors.transparent,
   ));
+
+  await MobileAds.instance.initialize();
+  await ChallengeRepository().updateChallengeValid();
+
   runApp(MyApp());
 }
 
@@ -21,12 +27,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-    FirebaseAdMob.instance.initialize(appId: _appId);
-    ChallengeRepository().updateChallengeValid();
-
     return ChangeNotifierProvider<ProviderBannerAd>(
-      create: (_) => ProviderBannerAd(adUnitId: _bannerId)..init()..run(),
+      create: (_) => ProviderBannerAd(adUnitId: _bannerId)
+        ..init()
+        ..run(),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(

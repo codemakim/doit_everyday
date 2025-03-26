@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:core';
-
 import 'package:challenge_everyday/model/challenge/challenge_backup.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 ///
@@ -13,7 +11,7 @@ import 'package:intl/intl.dart';
 
 // ignore: unnecessary_getters_setters
 class Challenge {
-  int index; // primary key
+  int? index; // primary key
   String title; // 도전 제목
   DateTime startDate; // 도전 시작일
   DateTime endDate; // 도전 종료일
@@ -22,7 +20,7 @@ class Challenge {
   int totalTimes; // 도전 총 일수
   int maxDoTimes; // 최대 연속 수행 일 수
   int continueDoTimes; // 현재 연속 수행 일 수
-  DateTime lastDoDate; // 최근 수행 일시
+  DateTime? lastDoDate; // 최근 수행 일시
   String doHistory; // 일별 수행 여부 ex) 1,0,1,1,1,0,0,1,...
   ChallengeBackup challengeBackup; // 수행 취소 대비 백업
   bool valid; // 유효성 true/false
@@ -31,24 +29,24 @@ class Challenge {
 
   Challenge(
       {this.index,
-      @required this.title,
-      @required this.startDate,
-      @required this.endDate,
-      String weekDay,
-      int doTimes,
-      int totalTimes,
-      int maxDoTimes,
-      int continueDoTimes,
+      required this.title,
+      required this.startDate,
+      required this.endDate,
+      String? weekDay,
+      int? doTimes,
+      int? totalTimes,
+      int? maxDoTimes,
+      int? continueDoTimes,
       this.lastDoDate,
-      String doHistory,
-      ChallengeBackup challengeBackup,
+      String? doHistory,
+      ChallengeBackup? challengeBackup,
       this.valid = true,
-      int userIndex,
-      DateTime createDate})
+      int? userIndex,
+      DateTime? createDate})
       : this.weekDay = weekDay ?? '12345',
         this.doTimes = doTimes ?? 0,
         this.totalTimes =
-            totalTimes ?? startDate.difference(endDate).inDays + 1,
+            totalTimes ?? endDate.difference(startDate).inDays.abs() + 1,
         this.maxDoTimes = maxDoTimes ?? 0,
         this.continueDoTimes = continueDoTimes ?? 0,
         this.doHistory = doHistory ?? '',
@@ -78,12 +76,11 @@ class Challenge {
 
   void backup() {
     this.challengeBackup = ChallengeBackup(
-      doTimes: this.doTimes,
-      maxDoTimes: this.maxDoTimes,
-      continueDoTimes: this.continueDoTimes,
-      doHistory: this.doHistory,
-      lastDoDate: this.lastDoDate
-    );
+        doTimes: this.doTimes,
+        maxDoTimes: this.maxDoTimes,
+        continueDoTimes: this.continueDoTimes,
+        doHistory: this.doHistory,
+        lastDoDate: this.lastDoDate);
   }
 
   void restore() {
@@ -109,7 +106,7 @@ class Challenge {
         'n_totaltimes': totalTimes,
         'n_maxdotimes': maxDoTimes,
         'n_continuedotimes': continueDoTimes,
-        'd_lastdodate': lastDoDate.toString(),
+        'd_lastdodate': lastDoDate?.toString() ?? 'null',
         's_dohistory': doHistory,
         's_challengeBackup': jsonEncode(challengeBackup),
         'b_valid': valid ? 1 : 0,
@@ -118,7 +115,7 @@ class Challenge {
       };
 
   factory Challenge.fromJson(Map<String, dynamic> json) {
-    return new Challenge(
+    return Challenge(
       index: json['n_index'],
       title: json['s_title'],
       startDate: DateTime.parse(json['d_startdate']),
@@ -129,10 +126,11 @@ class Challenge {
       maxDoTimes: json['n_maxdotimes'],
       continueDoTimes: json['n_continuedotimes'],
       lastDoDate: json['d_lastdodate'] == 'null'
-          ? DateTime(2000, 01, 01)
+          ? null
           : DateTime.parse(json['d_lastdodate']),
       doHistory: json['s_dohistory'],
-      challengeBackup: ChallengeBackup.fromJson(jsonDecode(json['s_challengeBackup'])),
+      challengeBackup:
+          ChallengeBackup.fromJson(jsonDecode(json['s_challengeBackup'])),
       valid: json['b_valid'] > 0 ? true : false,
       userIndex: json['n_userindex'],
       createDate: DateTime.parse(json['d_createdate']),

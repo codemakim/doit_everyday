@@ -9,105 +9,106 @@ import 'package:challenge_everyday/screen/sendEmail.dart';
 import 'package:challenge_everyday/widget/SpaceBannerContainer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:intl/intl.dart';
 
 class MainPage extends StatefulWidget {
-
   @override
   _MainPage createState() => _MainPage();
 }
 
 class _MainPage extends State<MainPage> {
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         Expanded(
           child: Scaffold(
-              appBar: GradientAppBar(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.lightBlue,
-                    Colors.greenAccent[400],
-                  ],
-                ),
-                title: Text(DateFormat('yyyy년 MM월 dd일').format(DateTime.now())),
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddChallengeScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  PopupMenuButton<String>(
-                    icon: Icon(Icons.settings),
-                    itemBuilder: (context) {
-                      List<String> itemList = <String>['모든 도전 보기', '문의'];
-                      return itemList.map((item) {
-                        return PopupMenuItem<String>(
-                            value: item, child: Text(item));
-                      }).toList();
-                    },
-                    onSelected: (menuItem) {
-                      switch (menuItem) {
-                        case '모든 도전 보기':
-                          {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AllChallenge()));
-                          }
-                          break;
-                        case '문의':
-                          {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => SendEmail()));
-                          }
-                          break;
-                      }
-                    },
-                  )
-                ],
-              ),
-              body: Container(
+            appBar: AppBar(
+              flexibleSpace: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                     colors: [
-                      Colors.orange[50],
-                      Colors.pink[100],
+                      Colors.lightBlue,
+                      Colors.greenAccent,
                     ],
                   ),
                 ),
-                child: Center(
-                  child: futureChallengeList(),
+              ),
+              title: Text(DateFormat('yyyy년 MM월 dd일').format(DateTime.now())),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddChallengeScreen(),
+                      ),
+                    );
+                  },
+                ),
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.settings),
+                  itemBuilder: (context) {
+                    List<String> itemList = <String>['모든 도전 보기', '문의'];
+                    return itemList.map((item) {
+                      return PopupMenuItem<String>(
+                          value: item, child: Text(item));
+                    }).toList();
+                  },
+                  onSelected: (menuItem) {
+                    switch (menuItem) {
+                      case '모든 도전 보기':
+                        {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AllChallenge()));
+                        }
+                        break;
+                      case '문의':
+                        {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SendEmail()));
+                        }
+                        break;
+                    }
+                  },
+                )
+              ],
+            ),
+            body: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.orange.shade50,
+                    Colors.pink.shade100,
+                  ],
                 ),
               ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddChallengeScreen(),
-                    ),
-                  );
-                },
-                tooltip: 'Add Challenge',
-                child: Icon(Icons.add),
-                backgroundColor: Colors.greenAccent[400],
+              child: Center(
+                child: futureChallengeList(),
               ),
             ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddChallengeScreen(),
+                  ),
+                );
+              },
+              tooltip: 'Add Challenge',
+              child: Icon(Icons.add),
+              backgroundColor: Colors.greenAccent,
+            ),
+          ),
         ),
         SpaceBannerContainer(),
       ],
@@ -118,15 +119,17 @@ class _MainPage extends State<MainPage> {
     return FutureBuilder<List<Challenge>>(
       future: ChallengeRepository().selectChallengeForMainListTile(),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
           return CarouselSlider(
-            height: 400.0,
-            initialPage: 0,
-            enlargeCenterPage: true,
-            autoPlay: false,
-            reverse: true,
-            scrollDirection: Axis.horizontal,
-            items: snapshot.data.map((item) {
+            options: CarouselOptions(
+              height: 400.0,
+              initialPage: 0,
+              enlargeCenterPage: true,
+              autoPlay: false,
+              reverse: true,
+              scrollDirection: Axis.horizontal,
+            ),
+            items: snapshot.data!.map((item) {
               bool todayDone = actionToday(item);
               return Builder(
                 builder: (context) {
@@ -138,7 +141,7 @@ class _MainPage extends State<MainPage> {
                         Navigator.push(
                             context,
                             FadeRoute(
-                                page: InfoChallengeScreen(index: item.index,)));
+                                page: InfoChallengeScreen(index: item.index)));
                       },
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -170,7 +173,7 @@ class _MainPage extends State<MainPage> {
                                 child: GestureDetector(
                                   onTap: () {
                                     if (!todayDone) {
-                                      Scaffold.of(context)
+                                      ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                         content: Text('오늘도 멋집니다!'),
                                       ));
@@ -180,7 +183,7 @@ class _MainPage extends State<MainPage> {
                                       undoChallenge(item);
                                       setState(() {});
                                       /*
-                                      Scaffold.of(context)
+                                      ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                         content: Text('오늘은 이미 완료했어요!'),
                                       ));
@@ -223,8 +226,10 @@ class _MainPage extends State<MainPage> {
 
   /// 도전 정보를 넘겨받아, 오늘 해당 도전을 수행했는지 여부를 반환하는 메소드
   bool actionToday(Challenge challenge) {
-    DateTime lastDoDate = DateTime(challenge.lastDoDate.year,
-        challenge.lastDoDate.month, challenge.lastDoDate.day);
+    if (challenge.lastDoDate == null) return false;
+
+    DateTime lastDoDate = DateTime(challenge.lastDoDate!.year,
+        challenge.lastDoDate!.month, challenge.lastDoDate!.day);
     DateTime nowDate = DateTime.now();
     nowDate = DateTime(nowDate.year, nowDate.month, nowDate.day);
     // todayDone 값이 'true'면 오늘 수행했음. 'false'일 경우, 오늘 수행 안했음.
@@ -239,14 +244,14 @@ class _MainPage extends State<MainPage> {
     challenge.backup();
 
     // 'challenge'를 만들어 놓고 처음 수행 버튼을 누르는 경우
-    challenge.lastDoDate == DateTime(2000, 1, 1)
-        ? challenge.lastDoDate = challenge.startDate
-        : challenge.lastDoDate = challenge.lastDoDate.add(Duration(days: 1));
+    challenge.lastDoDate = challenge.lastDoDate == null
+        ? DateTime.now()
+        : challenge.lastDoDate!.add(Duration(days: 1));
 
     DateTime now = DateTime.now();
     now = DateTime(now.year, now.month, now.day);
-    DateTime last = DateTime(challenge.lastDoDate.year,
-        challenge.lastDoDate.month, challenge.lastDoDate.day);
+    DateTime last = DateTime(challenge.lastDoDate!.year,
+        challenge.lastDoDate!.month, challenge.lastDoDate!.day);
 
     int days = now.difference(last).inDays;
     for (int i = 0; i < days; i++) {

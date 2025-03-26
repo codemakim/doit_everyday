@@ -2,14 +2,11 @@ import 'package:challenge_everyday/model/challenge/challenge.dart';
 import 'package:challenge_everyday/repository/challengeRepository.dart';
 import 'package:challenge_everyday/widget/RaisedGradientButton.dart';
 import 'package:challenge_everyday/widget/SpaceBannerContainer.dart';
-import 'package:date_range_picker/date_range_picker.dart' as DateRangePicker;
 import 'package:flutter/material.dart';
-import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:intl/intl.dart';
 
 /// 도전을 추가하기 위한 화면입니다.
 class AddChallengeScreen extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return AddChallengeFormWidget();
@@ -17,7 +14,7 @@ class AddChallengeScreen extends StatefulWidget {
 }
 
 class AddChallengeFormWidget extends State<AddChallengeScreen> {
-  List<DateTime> _dateList;
+  List<DateTime>? _dateList;
   final _challengeTitleController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -41,13 +38,17 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
       children: <Widget>[
         Expanded(
           child: Scaffold(
-            resizeToAvoidBottomPadding: false,
+            resizeToAvoidBottomInset: false,
             key: _scaffoldKey,
-            appBar: GradientAppBar(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [Colors.lightBlue, Colors.greenAccent[400]],
+            appBar: AppBar(
+              flexibleSpace: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [Colors.lightBlue, Colors.greenAccent],
+                  ),
+                ),
               ),
               title: Text('도전 추가하기!'),
             ),
@@ -57,8 +58,8 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.orange[50],
-                    Colors.pink[100],
+                    Colors.orange.shade50,
+                    Colors.pink.shade100,
                   ],
                 ),
               ),
@@ -76,7 +77,8 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 16.0,
-                                  vertical: MediaQuery.of(context).size.height * 0.1),
+                                  vertical:
+                                      MediaQuery.of(context).size.height * 0.1),
                               child: Column(
                                 children: <Widget>[
                                   // 도전 제목을 입력받기 위한 텍스트 폼
@@ -87,7 +89,8 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                                     ),
                                     controller: _challengeTitleController,
                                     validator: (value) {
-                                      if (value.isEmpty) return '도전 제목을 입력하세요.';
+                                      if (value?.isEmpty ?? true)
+                                        return '도전 제목을 입력하세요.';
                                       return null;
                                     },
                                   ),
@@ -95,18 +98,18 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                                     padding: EdgeInsets.all(5.0),
                                   ),
                                   // 도전 수행 기간 설정을 위한 버튼 위젯
-                                  ButtonBar(
+                                  OverflowBar(
                                     children: <Widget>[
                                       Text(
                                         _dateList == null
                                             ? '기간을 설정해주세요.'
-                                            : '${DateFormat('yyyy.MM.dd').format(_dateList[0]).toString()} 부터 \n${DateFormat('yyyy.MM.dd').format(_dateList[1]).toString()} 까지',
+                                            : '${DateFormat('yyyy.MM.dd').format(_dateList![0]).toString()} 부터 \n${DateFormat('yyyy.MM.dd').format(_dateList![1]).toString()} 까지',
                                         style: TextStyle(
                                           fontSize: 15.0,
                                         ),
                                       ),
                                       // 도전 수행 기간 설정 버튼
-                                      RaisedButton(
+                                      ElevatedButton(
                                         onPressed: () {
                                           runDateRangePicker();
                                         }, // onPressed()
@@ -117,14 +120,17 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                                             color: Colors.white,
                                           ),
                                         ),
-                                        color: Colors.indigo,
-                                      ), // RaisedButton
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.indigo,
+                                        ),
+                                      ), // ElevatedButton
                                     ], // <Widget>[]
-                                  ), // ButtonBar
+                                  ), // OverflowBar
                                   Padding(
                                     padding: EdgeInsets.symmetric(vertical: 15),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.max,
                                       children: weekDayColumn(),
                                     ), // Row
@@ -148,12 +154,11 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                           ),
                         ),
                         onPressed: () {
-                          var validateResult = _formKey.currentState.validate();
+                          var validateResult =
+                              _formKey.currentState!.validate();
                           if (!validateResult) {
-                            _scaffoldKey.currentState.showSnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text('필수 항목을 모두 입력해주세요.')));
-                          } else if (_dateList == null) {
-                            runDateRangePicker();
                           } else {
                             // weekday 를 구하기 위한 코드 시작
                             String weekday = '';
@@ -169,10 +174,11 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
 
                             // totalTimes 를 구하기 위한 코드 시작
                             int totalTimes = 0;
-                            Duration duration = _dateList[1].difference(_dateList[0]);
+                            Duration duration =
+                                _dateList![1].difference(_dateList![0]);
                             //int diffDays = duration.inDays - (duration.inDays*2);
                             for (int i = 0; i <= duration.inDays; i++) {
-                              if (weekday.contains(_dateList[0]
+                              if (weekday.contains(_dateList![0]
                                   .add(Duration(days: i))
                                   .weekday
                                   .toString())) {
@@ -181,11 +187,11 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                             }
                             // totalTimes 를 구하기 위한 코드 끝
 
-                            var challenge = new Challenge(
+                            var challenge = Challenge(
                                 title: _challengeTitleController.text,
-                                startDate: _dateList[0],
-                                endDate: _dateList[1].add(
-                                    Duration(hours: 23, minutes: 59, seconds: 59)),
+                                startDate: _dateList![0],
+                                endDate: _dateList![1].add(Duration(
+                                    hours: 23, minutes: 59, seconds: 59)),
                                 weekDay: weekday,
                                 doTimes: 0,
                                 totalTimes: totalTimes,
@@ -200,12 +206,13 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                           }
                         },
                         gradient: LinearGradient(
-                          colors: [Colors.lightBlue, Colors.greenAccent[400]],
+                          colors: [Colors.lightBlue, Colors.greenAccent],
                         ),
                       ) // RaisedButton end,
                       ),
                   Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       child: RaisedGradientButton(
                         child: Text(
                           '되돌아가기',
@@ -238,7 +245,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
           Checkbox(
             value: _mon,
             onChanged: (value) => setState(() {
-              _mon = value;
+              _mon = value ?? true;
             }),
             activeColor: Colors.indigo,
           )
@@ -250,7 +257,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
           Checkbox(
             value: _tue,
             onChanged: (value) => setState(() {
-              _tue = value;
+              _tue = value ?? true;
             }),
             activeColor: Colors.indigo,
           )
@@ -262,7 +269,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
           Checkbox(
             value: _wed,
             onChanged: (value) => setState(() {
-              _wed = value;
+              _wed = value ?? true;
             }),
             activeColor: Colors.indigo,
           )
@@ -274,7 +281,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
           Checkbox(
             value: _thu,
             onChanged: (value) => setState(() {
-              _thu = value;
+              _thu = value ?? true;
             }),
             activeColor: Colors.indigo,
           )
@@ -286,7 +293,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
           Checkbox(
             value: _fri,
             onChanged: (value) => setState(() {
-              _fri = value;
+              _fri = value ?? true;
             }),
             activeColor: Colors.indigo,
           )
@@ -298,7 +305,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
           Checkbox(
             value: _sat,
             onChanged: (value) => setState(() {
-              _sat = value;
+              _sat = value ?? false;
             }),
             activeColor: Colors.indigo,
           )
@@ -310,7 +317,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
           Checkbox(
             value: _sun,
             onChanged: (value) => setState(() {
-              _sun = value;
+              _sun = value ?? false;
             }),
             activeColor: Colors.indigo,
           )
@@ -321,23 +328,23 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
   }
 
   /// 도전 기간 설정 버튼 클릭시 실행되는 함수입니다.
-  void runDateRangePicker() {
+  void runDateRangePicker() async {
     DateTime now = DateTime.now();
-    DateRangePicker.showDatePicker(
-            context: context,
-            initialFirstDate: DateTime.now(),
-            initialLastDate: DateTime.now().add(Duration(days: 1)),
-            firstDate: DateTime(now.year, now.month, now.day),
-            lastDate: DateTime(DateTime.now().year + 3, DateTime.now().month,
-                DateTime.now().day))
-        .then((dateList) {
-      if (dateList.length < 2) {
-        dateList.add(dateList[0]);
-        dateList[0] = DateTime(now.year, now.month, now.day);
-      }
+    final DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(now.year, now.month, now.day),
+      lastDate: DateTime(now.year + 3, now.month, now.day),
+      initialDateRange: DateTimeRange(
+        start: now,
+        end: now.add(Duration(days: 1)),
+      ),
+    );
+
+    if (picked != null) {
+      List<DateTime> dateList = [picked.start, picked.end];
       setState(() {
         _dateList = dateList;
       });
-    });
+    }
   }
 }
