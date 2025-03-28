@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 
 /// 도전을 추가하기 위한 화면입니다.
 class AddChallengeScreen extends StatefulWidget {
+  const AddChallengeScreen({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return AddChallengeFormWidget();
@@ -42,7 +44,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
             key: _scaffoldKey,
             appBar: AppBar(
               flexibleSpace: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
@@ -50,7 +52,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                   ),
                 ),
               ),
-              title: Text('도전 추가하기!'),
+              title: const Text('도전 추가하기!'),
             ),
             body: Container(
               decoration: BoxDecoration(
@@ -83,7 +85,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                                 children: <Widget>[
                                   // 도전 제목을 입력받기 위한 텍스트 폼
                                   TextFormField(
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       labelText: "도전 제목",
                                       hintText: "도전 제목을 입력하세요.",
                                     ),
@@ -94,7 +96,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                                       return null;
                                     },
                                   ),
-                                  Padding(
+                                  const Padding(
                                     padding: EdgeInsets.all(5.0),
                                   ),
                                   // 도전 수행 기간 설정을 위한 버튼 위젯
@@ -104,7 +106,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                                         _dateList == null
                                             ? '기간을 설정해주세요.'
                                             : '${DateFormat('yyyy.MM.dd').format(_dateList![0]).toString()} 부터 \n${DateFormat('yyyy.MM.dd').format(_dateList![1]).toString()} 까지',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 15.0,
                                         ),
                                       ),
@@ -113,7 +115,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                                         onPressed: () {
                                           runDateRangePicker();
                                         }, // onPressed()
-                                        child: Text(
+                                        child: const Text(
                                           '기간 설정',
                                           style: TextStyle(
                                             fontSize: 16.0,
@@ -127,7 +129,8 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                                     ], // <Widget>[]
                                   ), // OverflowBar
                                   Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 15),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -144,9 +147,9 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                     ), // Column end
                   ), // Form end
                   Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: RaisedGradientButton(
-                        child: Text(
+                        child: const Text(
                           '추가하기',
                           style: TextStyle(
                             color: Colors.white,
@@ -158,7 +161,8 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                               _formKey.currentState!.validate();
                           if (!validateResult) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('필수 항목을 모두 입력해주세요.')));
+                                const SnackBar(
+                                    content: Text('필수 항목을 모두 입력해주세요.')));
                           } else {
                             // weekday 를 구하기 위한 코드 시작
                             String weekday = '';
@@ -169,7 +173,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                             if (_fri) weekday += '5';
                             if (_sat) weekday += '6';
                             if (_sun) weekday += '7';
-                            if (weekday.length < 1) weekday = '12345';
+                            if (weekday.isEmpty) weekday = '12345';
                             // weekday 를 구하기 위한 코드 끝
 
                             // totalTimes 를 구하기 위한 코드 시작
@@ -190,7 +194,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
                             var challenge = Challenge(
                                 title: _challengeTitleController.text,
                                 startDate: _dateList![0],
-                                endDate: _dateList![1].add(Duration(
+                                endDate: _dateList![1].add(const Duration(
                                     hours: 23, minutes: 59, seconds: 59)),
                                 weekDay: weekday,
                                 doTimes: 0,
@@ -200,28 +204,27 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
 
                             // Challenge 추가
                             ChallengeRepository().insertChallenge(challenge);
-                            print(challenge.toString());
                             setState(() {});
                             Navigator.pop(context);
                           }
                         },
-                        gradient: LinearGradient(
+                        gradient: const LinearGradient(
                           colors: [Colors.lightBlue, Colors.greenAccent],
                         ),
                       ) // RaisedButton end,
                       ),
                   Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
                       child: RaisedGradientButton(
-                        child: Text(
+                        child: const Text(
                           '되돌아가기',
                           style: TextStyle(color: Colors.white, fontSize: 16.0),
                         ),
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        gradient: LinearGradient(
+                        gradient: const LinearGradient(
                           colors: [Colors.amber, Colors.pink],
                         ),
                       ) // RaisedButton end,
@@ -231,7 +234,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
             ),
           ),
         ),
-        SpaceBannerContainer(),
+        const SpaceBannerContainer(),
       ],
     );
   }
@@ -241,7 +244,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
     List<Widget> columnList = <Widget>[
       Column(
         children: <Widget>[
-          Text('Mon'),
+          const Text('Mon'),
           Checkbox(
             value: _mon,
             onChanged: (value) => setState(() {
@@ -253,7 +256,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
       ),
       Column(
         children: <Widget>[
-          Text('Tue'),
+          const Text('Tue'),
           Checkbox(
             value: _tue,
             onChanged: (value) => setState(() {
@@ -265,7 +268,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
       ),
       Column(
         children: <Widget>[
-          Text('Wed'),
+          const Text('Wed'),
           Checkbox(
             value: _wed,
             onChanged: (value) => setState(() {
@@ -277,7 +280,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
       ),
       Column(
         children: <Widget>[
-          Text('Thu'),
+          const Text('Thu'),
           Checkbox(
             value: _thu,
             onChanged: (value) => setState(() {
@@ -289,7 +292,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
       ),
       Column(
         children: <Widget>[
-          Text('Fri'),
+          const Text('Fri'),
           Checkbox(
             value: _fri,
             onChanged: (value) => setState(() {
@@ -301,7 +304,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
       ),
       Column(
         children: <Widget>[
-          Text('Sat'),
+          const Text('Sat'),
           Checkbox(
             value: _sat,
             onChanged: (value) => setState(() {
@@ -313,7 +316,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
       ),
       Column(
         children: <Widget>[
-          Text('Sun'),
+          const Text('Sun'),
           Checkbox(
             value: _sun,
             onChanged: (value) => setState(() {
@@ -336,7 +339,7 @@ class AddChallengeFormWidget extends State<AddChallengeScreen> {
       lastDate: DateTime(now.year + 3, now.month, now.day),
       initialDateRange: DateTimeRange(
         start: now,
-        end: now.add(Duration(days: 1)),
+        end: now.add(const Duration(days: 1)),
       ),
     );
 

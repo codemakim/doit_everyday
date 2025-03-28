@@ -7,11 +7,12 @@ import 'package:challenge_everyday/screen/allChallengeList.dart';
 import 'package:challenge_everyday/screen/infoChallenge.dart';
 import 'package:challenge_everyday/screen/sendEmail.dart';
 import 'package:challenge_everyday/widget/SpaceBannerContainer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
+
   @override
   _MainPage createState() => _MainPage();
 }
@@ -25,7 +26,7 @@ class _MainPage extends State<MainPage> {
           child: Scaffold(
             appBar: AppBar(
               flexibleSpace: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -39,7 +40,7 @@ class _MainPage extends State<MainPage> {
               title: Text(DateFormat('yyyy년 MM월 dd일').format(DateTime.now())),
               actions: <Widget>[
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.add,
                     color: Colors.white,
                   ),
@@ -53,7 +54,7 @@ class _MainPage extends State<MainPage> {
                   },
                 ),
                 PopupMenuButton<String>(
-                  icon: Icon(Icons.settings),
+                  icon: const Icon(Icons.settings),
                   itemBuilder: (context) {
                     List<String> itemList = <String>['모든 도전 보기', '문의'];
                     return itemList.map((item) {
@@ -66,13 +67,13 @@ class _MainPage extends State<MainPage> {
                       case '모든 도전 보기':
                         {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AllChallenge()));
+                              builder: (context) => const AllChallenge()));
                         }
                         break;
                       case '문의':
                         {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SendEmail()));
+                              builder: (context) => const SendEmail()));
                         }
                         break;
                     }
@@ -105,12 +106,12 @@ class _MainPage extends State<MainPage> {
                 );
               },
               tooltip: 'Add Challenge',
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
               backgroundColor: Colors.greenAccent,
             ),
           ),
         ),
-        SpaceBannerContainer(),
+        const SpaceBannerContainer(),
       ],
     );
   }
@@ -135,7 +136,7 @@ class _MainPage extends State<MainPage> {
                 builder: (context) {
                   return Container(
                     width: MediaQuery.of(context).size.width,
-                    margin: EdgeInsets.symmetric(horizontal: 10.0),
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -169,12 +170,12 @@ class _MainPage extends State<MainPage> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.only(top: 30.0),
+                                padding: const EdgeInsets.only(top: 30.0),
                                 child: GestureDetector(
                                   onTap: () {
                                     if (!todayDone) {
                                       ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
+                                          .showSnackBar(const SnackBar(
                                         content: Text('오늘도 멋집니다!'),
                                       ));
                                       doChallenge(item);
@@ -191,12 +192,12 @@ class _MainPage extends State<MainPage> {
                                     }
                                   },
                                   child: todayDone
-                                      ? Icon(
+                                      ? const Icon(
                                           Icons.check_circle,
                                           color: Colors.greenAccent,
                                           size: 150,
                                         )
-                                      : Icon(Icons.check_circle_outline,
+                                      : const Icon(Icons.check_circle_outline,
                                           color: Colors.grey, size: 150),
                                 ),
                               )
@@ -211,7 +212,7 @@ class _MainPage extends State<MainPage> {
             }).toList(),
           );
         } else {
-          return Center(
+          return const Center(
             child: Text(
               "오늘 할 매일도전이 없네요!\n도전하세요!\n(상 / 하단의 '+' 버튼 터치)",
               textScaleFactor: 1.4,
@@ -246,7 +247,7 @@ class _MainPage extends State<MainPage> {
     // 'challenge'를 만들어 놓고 처음 수행 버튼을 누르는 경우
     challenge.lastDoDate = challenge.lastDoDate == null
         ? DateTime.now()
-        : challenge.lastDoDate!.add(Duration(days: 1));
+        : challenge.lastDoDate!.add(const Duration(days: 1));
 
     DateTime now = DateTime.now();
     now = DateTime(now.year, now.month, now.day);

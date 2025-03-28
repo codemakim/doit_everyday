@@ -1,7 +1,6 @@
 import 'package:challenge_everyday/model/challenge/challenge.dart';
 import 'package:challenge_everyday/repository/challengeRepository.dart';
 import 'package:challenge_everyday/widget/SpaceBannerContainer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
@@ -14,7 +13,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 class InfoChallengeScreen extends StatefulWidget {
   final int? index;
 
-  InfoChallengeScreen({required this.index});
+  InfoChallengeScreen({Key? key, required this.index}) : super(key: key);
 
   @override
   _InfoChallengeScreenState createState() => _InfoChallengeScreenState();
@@ -29,15 +28,15 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
           child: Scaffold(
             appBar: AppBar(
               flexibleSpace: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                decoration: const BoxDecoration(
+                  gradient: const LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [Colors.lightBlue, Colors.greenAccent],
                   ),
                 ),
               ),
-              title: Text('도전 정보'),
+              title: const Text('도전 정보'),
             ),
             body: Stack(
               children: <Widget>[
@@ -74,7 +73,8 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
                               ],
                             );
                           } else {
-                            return Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }
                         }),
                   ),
@@ -83,7 +83,7 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
             ),
           ),
         ),
-        SpaceBannerContainer(),
+        const SpaceBannerContainer(),
       ],
     );
   }
@@ -93,12 +93,12 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
       child: ListTile(
         title: Text(
           title,
-          style: TextStyle(color: Colors.grey),
+          style: const TextStyle(color: Colors.grey),
         ),
         subtitle: Text(
           attribute,
           textScaleFactor: 1.2,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
           ),
         ),
@@ -110,7 +110,7 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
     EventList<Event> markedDate = getEventDateList(challenge);
     return CalendarCarousel<Event>(
       height: MediaQuery.of(context).size.height * 0.50,
-      weekendTextStyle: TextStyle(
+      weekendTextStyle: const TextStyle(
         color: Colors.red,
       ),
       markedDatesMap: markedDate,
@@ -132,7 +132,7 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
         child: Center(
           child: Text(
             day,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
             ),
           ),
@@ -144,16 +144,15 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
     EventList<Event> markedDate = EventList<Event>(
       events: {},
     );
-    if (challenge.doHistory.length < 1) return markedDate;
+    if (challenge.doHistory.isEmpty) return markedDate;
 
     DateTime day = challenge.startDate;
-    print(day);
     List<String> historyList = challenge.doHistory.split(',');
 
     int i = 0;
     while (i < historyList.length) {
       if (!challenge.weekDay.contains(day.weekday.toString())) {
-        day = day.add(Duration(days: 1));
+        day = day.add(const Duration(days: 1));
         continue;
       }
       if (challenge.weekDay.contains(day.weekday.toString())) {
@@ -167,7 +166,7 @@ class _InfoChallengeScreenState extends State<InfoChallengeScreen> {
                 : doDateIcon(Colors.greenAccent, day.day.toString()),
           ),
         );
-        day = day.add(Duration(days: 1));
+        day = day.add(const Duration(days: 1));
         i++;
       }
     }

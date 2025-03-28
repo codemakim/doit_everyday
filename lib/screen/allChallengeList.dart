@@ -70,7 +70,7 @@ class _AllChallengeState extends State<AllChallenge> {
             ),
           ),
         ),
-        SpaceBannerContainer(),
+        const SpaceBannerContainer(),
       ],
     );
   }
@@ -140,7 +140,6 @@ class _AllChallengeState extends State<AllChallenge> {
         TextButton(
           child: const Text('OK'),
           onPressed: () {
-            print('${challenge.title} 삭제');
             ChallengeRepository().deleteChallenge(challenge.index ?? 0);
             setState(() {});
             Navigator.of(context).pop();

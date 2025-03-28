@@ -59,7 +59,7 @@ class _SendEmailState extends State<SendEmail> {
             ),
           ),
         ),
-        SpaceBannerContainer(),
+        const SpaceBannerContainer(),
       ],
     );
   }
